@@ -1,29 +1,25 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
-export class Week {
-  public getNextWeek(date: Date) {
-    const firstDay = dayjs(date).day(7).day(0);
-  
-    return this.generateWeek(firstDay);
-  }
+export function getNextWeek(date: Date) {
+  return dayjs(date).add(1, 'week').toDate();
+}
 
-  public getLastWeek(date: Date) {
-    const firstDay = dayjs(date).day(-1).day(0);
-  
-    return this.generateWeek(firstDay);
-  }
+export function getPreviousWeek(date: Date) {
+  return dayjs(date).add(-1, 'week').toDate();
+}
 
-  public getWeek(date: Date) {
-    const firstDay = dayjs(date).day(0);
-    
-    return this.generateWeek(firstDay);
-  }
+export function getWeek(date: Date) {
+  const firstDay = dayjs(date).day(0);
 
-  private generateWeek(firstDay: dayjs.Dayjs) {
-    const week = Array(7).fill(null).map((_,i) => dayjs(firstDay).add(i, 'day').toDate());
-  
-    const lastDay = week[6];
-  
-    return { firstDay: firstDay.toDate(), week, lastDay };
-  }
+  return generateWeek(firstDay);
+}
+
+function generateWeek(firstDay: dayjs.Dayjs) {
+  const week = Array(7)
+    .fill(null)
+    .map((_, i) => dayjs(firstDay).add(i, 'day').toDate());
+
+  const lastDay = week[6];
+
+  return { firstDay: firstDay.toDate(), week, lastDay };
 }
