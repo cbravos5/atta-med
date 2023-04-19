@@ -2,14 +2,14 @@ import { GlobalStyles, MantineTheme, MantineThemeOverride } from "@mantine/core"
 import { fonts } from "./fonts";
 
 export const theme: MantineThemeOverride = {
-  colorScheme: 'dark',
+  colorScheme: 'light',
 
   fontFamily: fonts.poppins,
 
   colors: {
     primary: ['#62929E'],
     secondary: ['#FDFDFF'],
-    tertiary: ['546A7B'],
+    tertiary: ['#546A7B'],
     support: ['#393D3F','#C6C5B9']
   },
 
