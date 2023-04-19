@@ -1,4 +1,5 @@
-import { Text } from '@mantine/core';
+import { Month } from '@/helpers/month';
+import { Group } from '@mantine/core';
 import Head from 'next/head';
 
 export default function Home() {
@@ -11,7 +12,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Text fz="lg">Hello</Text>
+        <Group position="center">
+          
+        </Group>
       </main>
     </>
   );

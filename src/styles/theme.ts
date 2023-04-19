@@ -35,13 +35,13 @@ export const theme: MantineThemeOverride = {
     },
 
     body: {
-      background: theme.colors.primary[0],
+      background: theme.colors.secondary[0],
 
       overflowY: 'scroll',
 
       '&::-webkit-scrollbar': {
         width: '0.375rem',
-        background: theme.colors.primary[0]
+        background: theme.colors.secondary[0]
       },
     
       '&::-webkit-scrollbar-thumb': {
