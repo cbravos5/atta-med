@@ -37,7 +37,8 @@ export function CalendarMonth({ date }: Props) {
       radius={0}
       ta="center"
       sx={{
-        aspectRatio: '7 / 5',
+        aspectRatio: '8 / 5',
+        minHeight: 90,
         flexDirection: 'column',
         backgroundColor: isEmpty ? theme.colors.gray[2] + ' !important' : '',
         borderColor: theme.colors.gray[5] + ' !important'

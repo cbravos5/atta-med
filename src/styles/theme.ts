@@ -38,6 +38,7 @@ export const theme: MantineThemeOverride = {
       background: theme.colors.secondary[0],
 
       overflowY: 'scroll',
+      overflowX: 'auto',
 
       '&::-webkit-scrollbar': {
         width: '0.375rem',

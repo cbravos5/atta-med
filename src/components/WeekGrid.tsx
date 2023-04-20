@@ -8,6 +8,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { Eye, Plus } from 'tabler-icons-react';
+import { CalendarMonth } from './CalendarMonth';
 
 type Props = {
   days: Date[];
@@ -16,7 +17,6 @@ type Props = {
 const useMantineStyles = createStyles((theme) => ({
   container: {
     width: 1000,
-    height: 612,
 
     borderWidth: '0 4px',
     borderColor: theme.colors.primary[0],
@@ -61,19 +61,7 @@ export function WeekGrid({ days }: Props) {
   return (
     <Flex className={classes.container}>
       {days.map((day, i) => (
-        <Flex key={day.getDate() + i} className={classes.item}>
-          <Box h="100%" display="grid" sx={{ placeItems: 'center' }}>
-            <Title order={3} ta="center">
-              {day.getDate()}
-            </Title>
-          </Box>
-          <Button className={classes.button}>
-            <Plus size={25} />
-          </Button>
-          <Button className={classes.button}>
-            <Eye size={25} />
-          </Button>
-        </Flex>
+         <CalendarMonth date={day} />
       ))}
     </Flex>
   );
