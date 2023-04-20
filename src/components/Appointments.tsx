@@ -68,7 +68,12 @@ const useMantineStyles = createStyles((theme) => ({
       ...addScrollBar(),
     },
 
-    'h3, th': {
+    '.mantine-Modal-title': {
+      fontSize: 25,
+      fontWeight: 600,
+    },
+
+    'th': {
       color: theme.colors.support[0] + ' !important',
     },
 
@@ -120,17 +125,15 @@ export function Appointments() {
       <td>
         <ActionIcon
           className={classes.action}
-          onClick={() =>{
+          onClick={() => {
             setSelectedAppointment({
               name: 'João da Silva de Jesus',
               age: 24,
               gender: 'Masculino',
               time: '09:30',
             });
-            setIsCancelOpen.open()
-          }
-            
-          }
+            setIsCancelOpen.open();
+          }}
         >
           <X />
         </ActionIcon>
@@ -144,11 +147,9 @@ export function Appointments() {
         opened={!!openDate}
         onClose={() => setOpenDate(null)}
         centered
+        title={'Agendamentos em ' + fullDateParser.format(openDate || undefined)}
         className={classes.modal}
-      >
-        <Title order={3} ta="center">
-          Agendamentos em {fullDateParser.format(openDate || undefined)}
-        </Title>
+      >         
         <Table sx={{ borderCollapse: 'separate', borderSpacing: '0 5px' }}>
           <thead>
             <tr>

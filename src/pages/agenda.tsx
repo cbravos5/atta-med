@@ -1,5 +1,6 @@
 import { Appointments } from '@/components/Appointments';
 import { CalendarGrid } from '@/components/CalendarGrid';
+import { NewAppointnment } from '@/components/NewAppointment';
 import { WeekGrid } from '@/components/WeekGrid';
 import {
   generateMonthCalendar,
@@ -132,6 +133,7 @@ export default function Agenda() {
       </Box>
 
       <Appointments />
+      <NewAppointnment />
     </Flex>
   );
 }
