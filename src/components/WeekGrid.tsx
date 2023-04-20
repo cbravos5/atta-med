@@ -8,7 +8,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { Eye, Plus } from 'tabler-icons-react';
-import { CalendarMonth } from './CalendarMonth';
+import { CalendarItem } from './CalendarItem';
 
 type Props = {
   days: Date[];
@@ -61,7 +61,7 @@ export function WeekGrid({ days }: Props) {
   return (
     <Flex className={classes.container}>
       {days.map((day, i) => (
-         <CalendarMonth date={day} />
+         <CalendarItem date={day} />
       ))}
     </Flex>
   );

@@ -1,3 +1,4 @@
+import { Appointments } from '@/components/Appointments';
 import { CalendarGrid } from '@/components/CalendarGrid';
 import { WeekGrid } from '@/components/WeekGrid';
 import {
@@ -16,6 +17,7 @@ import {
   Select,
   Title,
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { useCallback, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'tabler-icons-react';
 
@@ -63,16 +65,11 @@ export default function Agenda() {
   const [viewDate, setViewDate] = useState(new Date());
   const [currentView, setCurrentView] = useState<Views>('month');
 
-  const monthDays = useMemo(() => {
+  const days = useMemo(() => {
     const { month } = getMonth(viewDate);
-
-    return generateMonthCalendar(month);
-  }, [viewDate, currentView]);
-
-  const weekDays = useMemo(() => {
     const { week } = getWeek(viewDate);
 
-    return week;
+    return { monthDays: generateMonthCalendar(month), weekDays: week };
   }, [viewDate, currentView]);
 
   const onPreviousView = useCallback(() => {
@@ -130,9 +127,11 @@ export default function Agenda() {
         ))}
       </Flex>
       <Box h={535}>
-        {currentView === 'month' && <CalendarGrid days={monthDays} />}
-        {currentView === 'week' && <WeekGrid days={weekDays} />}
+        {currentView === 'month' && <CalendarGrid days={days.monthDays} />}
+        {currentView === 'week' && <WeekGrid days={days.weekDays} />}
       </Box>
+
+      <Appointments />
     </Flex>
   );
 }

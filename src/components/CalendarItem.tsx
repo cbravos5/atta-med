@@ -1,3 +1,4 @@
+import { useAppointmentStore } from '@/store/appointment';
 import { Box, Button, Card, createStyles, Flex, Text } from '@mantine/core';
 import { Eye, Plus } from 'tabler-icons-react';
 
@@ -23,8 +24,9 @@ const useMantineStyles = createStyles((theme) => ({
   },
 }));
 
-export function CalendarMonth({ date }: Props) {
+export function CalendarItem({ date }: Props) {
   const { classes, theme } = useMantineStyles();
+  const { setOpenDate } = useAppointmentStore();
 
   const isEmpty = !date;
 
@@ -55,7 +57,7 @@ export function CalendarMonth({ date }: Props) {
             <Button className={classes.button}>
               <Plus size={25} />
             </Button>
-            <Button className={classes.button}>
+            <Button className={classes.button} onClick={() => setOpenDate(date)}>
               <Eye size={25} />
             </Button>
           </Flex>
