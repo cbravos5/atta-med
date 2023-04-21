@@ -5,6 +5,7 @@ import { ActionIcon, createStyles, Modal, Table } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useState } from 'react';
 import { X } from 'tabler-icons-react';
+import { AppointmentRow } from './AppointmentRow';
 import { CancelAppointment } from './CancelAppointment';
 
 const elements = [
@@ -71,21 +72,9 @@ const useMantineStyles = createStyles((theme) => ({
     },
 
     'th': {
+      fontSize: '1.2rem !important',
       color: theme.colors.support[0] + ' !important',
     },
-
-    'td, th': { fontSize: '1.2rem !important' },
-  },
-
-  row: {
-    color: theme.colors.secondary[0],
-
-    backgroundColor: theme.colors.primary[0],
-
-    marginBottom: 5,
-
-    'td:first-of-type': { borderRadius: '5px 0 0 5px' },
-    'td:last-of-type': { borderRadius: '0 5px 5px 0' },
   },
 
   action: {
@@ -112,7 +101,7 @@ export function Appointments() {
   });
 
   const rows = elements.map((element) => (
-    <tr key={element.name} className={classes.row}>
+    <AppointmentRow key={element.name}>
       <td>{element.name}</td>
       <td>{element.age}</td>
       <td>{element.gender}</td>
@@ -133,7 +122,7 @@ export function Appointments() {
           <X />
         </ActionIcon>
       </td>
-    </tr>
+    </AppointmentRow>
   ));
 
   return (

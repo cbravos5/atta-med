@@ -1,6 +1,7 @@
 import { Appointments } from '@/components/Appointments';
 import { CalendarGrid } from '@/components/CalendarGrid';
 import { NewAppointment } from '@/components/NewAppointment';
+import { PageContent } from '@/components/PageContent';
 import { WeekGrid } from '@/components/WeekGrid';
 import {
   generateMonthCalendar,
@@ -40,18 +41,6 @@ const weekNames = [
 ];
 
 const useMantineStyles = createStyles((theme) => ({
-  container: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 'sm',
-
-    width: 'fit-content',
-    margin: '0 auto',
-    padding: 'lg',
-
-    color: 'GrayText',
-  },
   action: {
     width: 50,
     height: 50,
@@ -90,11 +79,7 @@ export default function Agenda() {
   }, [viewDate, currentView]);
 
   return (
-    <Flex className={classes.container}>
-      <Title order={1} fw={600} size={58} w="100%">
-        Agenda
-      </Title>
-
+    <PageContent pageTitle="Agenda">
       <SegmentedControl
         styles={{
           indicator: { background: theme.colors.primary[0] }
@@ -134,6 +119,6 @@ export default function Agenda() {
 
       <Appointments />
       <NewAppointment />
-    </Flex>
+    </PageContent>
   );
 }
