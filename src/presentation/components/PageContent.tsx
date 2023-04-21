@@ -1,4 +1,4 @@
-import { Flex, FlexProps, Title } from '@mantine/core';
+import { Flex, FlexProps, Title } from "@mantine/core";
 
 type Props = {
   pageTitle: string;

@@ -1,4 +1,4 @@
-import { Grid, Title } from '@mantine/core';
+import { Grid } from '@mantine/core';
 import { CalendarItem } from './CalendarItem';
 
 type Props = {

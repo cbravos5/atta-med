@@ -1,51 +1,29 @@
-import { Appointments } from '@/components/Appointments';
-import { CalendarGrid } from '@/components/CalendarGrid';
-import { NewAppointment } from '@/components/NewAppointment';
-import { PageContent } from '@/components/PageContent';
-import { WeekGrid } from '@/components/WeekGrid';
-import {
-  generateMonthCalendar,
-  getMonth,
-  getNextMonth,
-  getPreviousMonth,
-} from '@/helpers/month';
-import { getNextWeek, getPreviousWeek, getWeek } from '@/helpers/week';
-import {
-  ActionIcon,
-  Box,
-  createStyles,
-  Flex,
-  SegmentedControl,
-  Select,
-  Title,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { useCallback, useMemo, useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'tabler-icons-react';
+import { generateMonthCalendar, getMonth, getNextMonth, getPreviousMonth } from "@/presentation/helpers/month";
+import { getNextWeek, getPreviousWeek, getWeek } from "@/presentation/helpers/week";
+import { ActionIcon, Box, createStyles, Flex, SegmentedControl, Title } from "@mantine/core";
+import { useCallback, useMemo, useState } from "react";
+import { ChevronLeft, ChevronRight } from "tabler-icons-react";
+import { PageContent } from "@/presentation/components/PageContent";
+import { CalendarGrid } from "@/presentation/agenda/CalendarGrid";
+import { WeekGrid } from "@/presentation/agenda/WeekGrid";
+import { Appointments } from "@/presentation/agenda/Appointments";
+import { NewAppointment } from "@/presentation/agenda/NewAppointment";
 
-type Views = 'week' | 'month';
+type Views = "week" | "month";
 
-const parseMonth = new Intl.DateTimeFormat('pt-BR', {
-  month: 'long',
-  year: 'numeric',
+const parseMonth = new Intl.DateTimeFormat("pt-BR", {
+  month: "long",
+  year: "numeric",
 });
 
-const weekNames = [
-  'Domingo',
-  'Segunda',
-  'Terça',
-  'Quarta',
-  'Quinta',
-  'Sexta',
-  'Sábado',
-];
+const weekNames = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 
 const useMantineStyles = createStyles((theme) => ({
   action: {
     width: 50,
     height: 50,
 
-    ':hover': { backgroundColor: theme.colors.tertiary[0] },
+    ":hover": { backgroundColor: theme.colors.tertiary[0] },
   },
 }));
 
@@ -53,7 +31,7 @@ export default function Agenda() {
   const { classes, theme } = useMantineStyles();
 
   const [viewDate, setViewDate] = useState(new Date());
-  const [currentView, setCurrentView] = useState<Views>('month');
+  const [currentView, setCurrentView] = useState<Views>("month");
 
   const days = useMemo(() => {
     const { month } = getMonth(viewDate);
@@ -63,17 +41,13 @@ export default function Agenda() {
   }, [viewDate, currentView]);
 
   const onPreviousView = useCallback(() => {
-    const newViewDate =
-      currentView === 'month'
-        ? getPreviousMonth(viewDate)
-        : getPreviousWeek(viewDate);
+    const newViewDate = currentView === "month" ? getPreviousMonth(viewDate) : getPreviousWeek(viewDate);
 
     setViewDate(() => newViewDate);
   }, [viewDate, currentView]);
 
   const onNextView = useCallback(() => {
-    const newViewDate =
-      currentView === 'month' ? getNextMonth(viewDate) : getNextWeek(viewDate);
+    const newViewDate = currentView === "month" ? getNextMonth(viewDate) : getNextWeek(viewDate);
 
     setViewDate(() => newViewDate);
   }, [viewDate, currentView]);
@@ -82,24 +56,26 @@ export default function Agenda() {
     <PageContent pageTitle="Agenda">
       <SegmentedControl
         styles={{
-          indicator: { background: theme.colors.primary[0] }
+          indicator: { background: theme.colors.primary[0] },
         }}
         defaultValue="month"
         onChange={(value) => setCurrentView(value as Views)}
         data={[
-          { value: 'month', label: 'Mês' },
-          { value: 'week', label: 'Semana' },
+          { value: "month", label: "Mês" },
+          { value: "week", label: "Semana" },
         ]}
         mb="lg"
         w={300}
-        sx={{ alignSelf: 'flex-end' }}
+        sx={{ alignSelf: "flex-end" }}
       />
 
       <Flex w="100%" justify="space-between">
         <ActionIcon onClick={onPreviousView} className={classes.action}>
           <ChevronLeft size={50} />
         </ActionIcon>
-        <Title order={2} fw={500}>{parseMonth.format(viewDate)}</Title>
+        <Title order={2} fw={500}>
+          {parseMonth.format(viewDate)}
+        </Title>
         <ActionIcon onClick={onNextView} className={classes.action}>
           <ChevronRight size={50} />
         </ActionIcon>
@@ -113,11 +89,11 @@ export default function Agenda() {
         ))}
       </Flex>
       <Box h={535}>
-        {currentView === 'month' && <CalendarGrid days={days.monthDays} />}
-        {currentView === 'week' && <WeekGrid days={days.weekDays} />}
+        {currentView === "month" && <CalendarGrid days={days.monthDays} />}
+        {currentView === "week" && <WeekGrid days={days.weekDays} />}
       </Box>
 
-      <Appointments />
+      { <Appointments /> }
       <NewAppointment />
     </PageContent>
   );

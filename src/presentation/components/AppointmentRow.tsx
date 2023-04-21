@@ -9,15 +9,15 @@ const useMantineStyles = createStyles((theme) => ({
 
     marginBottom: 5,
 
-    'td:first-of-type': { borderRadius: '5px 0 0 5px' },
-    'td:last-of-type': { borderRadius: '0 5px 5px 0' },
+    "td:first-of-type": { borderRadius: "5px 0 0 5px" },
+    "td:last-of-type": { borderRadius: "0 5px 5px 0" },
 
-    'td': { fontSize: '1.2rem !important' },
-  }
+    td: { fontSize: "1.2rem !important" },
+  },
 }));
 
 export function AppointmentRow(props: HTMLProps<HTMLTableRowElement>) {
   const { classes } = useMantineStyles();
 
-  return <tr {...props} className={classes.row} />
+  return <tr {...props} className={classes.row} />;
 }

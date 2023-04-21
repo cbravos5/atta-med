@@ -1,16 +1,16 @@
 import dayjs from "dayjs";
 
 export function getNextMonth(date: Date) {
-  return dayjs(date).add(1, 'month').toDate();
+  return dayjs(date).add(1, "month").toDate();
 }
 
 export function getPreviousMonth(date: Date) {
-  return dayjs(date).add(-1, 'month').toDate();
+  return dayjs(date).add(-1, "month").toDate();
 }
 
 export function getMonth(date: Date) {
   const firstDay = dayjs(date).date(1);
-  
+
   return generateMonth(firstDay);
 }
 
@@ -25,8 +25,7 @@ export function generateMonthCalendar(month: (Date | null | undefined)[]) {
   // add day to corresponing week column
   while (month.length > 0) {
     week.forEach((day) => {
-      if (month[month.length - 1]?.getDay() === day)
-        calendar.push(month.pop());
+      if (month[month.length - 1]?.getDay() === day) calendar.push(month.pop());
       else calendar.push(null);
     });
   }
@@ -43,7 +42,9 @@ export function generateMonthCalendar(month: (Date | null | undefined)[]) {
 function generateMonth(firstDay: dayjs.Dayjs) {
   const daysInMonth = firstDay.daysInMonth();
 
-  const month = Array(daysInMonth).fill(null).map((_,i) => dayjs(firstDay).add(i, 'day').toDate());
+  const month = Array(daysInMonth)
+    .fill(null)
+    .map((_, i) => dayjs(firstDay).add(i, "day").toDate());
 
   const lastDay = month[daysInMonth - 1];
 
