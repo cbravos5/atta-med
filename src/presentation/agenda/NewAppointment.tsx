@@ -6,9 +6,9 @@ import { useForm } from "@mantine/form";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { useCallback, useRef, useState } from "react";
 import { Clock } from "tabler-icons-react";
-import { Form } from "./Form";
+import { Form } from "../components/Form";
 import { NewPatientAccordion } from "./NewPatientAccordion";
-import { SearchInput } from "./SearchInput";
+import { SearchInput } from "../components/SearchInput";
 
 type FormValues = {
   patient: string;

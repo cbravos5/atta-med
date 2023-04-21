@@ -17,7 +17,7 @@ export function PageContent({ pageTitle, children, ...props }: Props) {
       color="GrayText"
       {...props}
     >
-      <Title order={1} fw={600} size={58} w="100%">
+      <Title order={1} fw={600} size={46} w="100%">
         {pageTitle}
       </Title>
 

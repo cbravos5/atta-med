@@ -7,7 +7,7 @@ import { cpf } from "cpf-cnpj-validator";
 import { useCallback } from "react";
 import { IMaskInput } from "react-imask";
 import { Plus } from "tabler-icons-react";
-import { Form } from "./Form";
+import { Form } from "../components/Form";
 
 type Props = {
   onCreatePatient: (value: Patient) => void;
