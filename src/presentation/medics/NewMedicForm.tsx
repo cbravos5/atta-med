@@ -12,6 +12,11 @@ export function NewMedicForm() {
   const [isLoading, setIsLoading] = useDisclosure(false);
 
   const form = useForm<FormValues>({
+    initialValues: {
+      name: '',
+      crm: '',
+      specialty: 'Cardiologia',
+    },
     validateInputOnBlur: true,
     validate: {
       name: (value) => (!!value ? null : "Campo obrigatório"),
@@ -29,7 +34,7 @@ export function NewMedicForm() {
   }, []);
 
   return (
-    <Form style={{ gap: "0.5rem", height: 350 }} onSubmit={form.onSubmit(onSubmit)}>
+    <Form style={{ gap: "0.5rem", height: 390 }} onSubmit={form.onSubmit(onSubmit)}>
       <Title order={4}>Novo médico</Title>
 
       <TextInput label="Nome" placeholder="Nome" maxLength={100} required {...form.getInputProps("name")} />

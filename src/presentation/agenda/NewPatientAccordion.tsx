@@ -26,10 +26,16 @@ export function NewPatientAccordion({ onCreatePatient }: Props) {
   const theme = useMantineTheme();
 
   const form = useForm<FormValues>({
+    initialValues: {
+      name: '',
+      age: 0,
+      cpf: '',
+      gender: 'other'
+    },
     validateInputOnBlur: true,
     validate: {
       name: (value) => (!!value ? null : "Campo obrigatório"),
-      age: (value) => (!!value ? null : "Campo obrigatório"),
+      age: (value) => (!!value ? null : "Idade inválida"),
       cpf: (value) => (cpf.isValid(value?.toString()) ? null : "CPF inválido"),
     },
   });
