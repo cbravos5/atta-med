@@ -3,7 +3,17 @@ import { HTMLProps } from "react";
 
 const useMantineStyles = createStyles((theme) => ({
   form: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+
+    padding: '1rem',
+
+    borderRadius: 10,
+
     '.mantine-Input-input': {
+      background: '#FFFFFFAA',
+
       '&:focus-within, &:focus': {
         borderColor: theme.colors.primary[0],
       },

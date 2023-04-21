@@ -26,7 +26,7 @@ const useMantineStyles = createStyles((theme) => ({
 
 export function CalendarItem({ date }: Props) {
   const { classes, theme } = useMantineStyles();
-  const { setOpenDate } = useAppointmentStore();
+  const { setOpenDate, openModal } = useAppointmentStore();
 
   const isEmpty = !date;
 
@@ -54,10 +54,10 @@ export function CalendarItem({ date }: Props) {
             </Text>
           </Box>
           <Flex gap={0} w="100%" h="75%">
-            <Button className={classes.button}>
+            <Button className={classes.button} onClick={() => {setOpenDate(date); openModal('newAppointment'); }}>
               <Plus size={25} />
             </Button>
-            <Button className={classes.button} onClick={() => setOpenDate(date)}>
+            <Button className={classes.button} onClick={() => {setOpenDate(date); openModal('appointments'); }}>
               <Eye size={25} />
             </Button>
           </Flex>

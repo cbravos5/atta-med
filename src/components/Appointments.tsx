@@ -1,7 +1,8 @@
 import { addScrollBar } from '@/helpers/addScrollBar';
+import { shortDatParser } from '@/helpers/parsers';
 import { useAppointmentStore } from '@/store/appointment';
-import { ActionIcon, createStyles, Modal, Table, Title } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { ActionIcon, createStyles, Modal, Table } from '@mantine/core';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useState } from 'react';
 import { X } from 'tabler-icons-react';
 import { CancelAppointment } from './CancelAppointment';
@@ -60,10 +61,6 @@ const elements = [
 const useMantineStyles = createStyles((theme) => ({
   modal: {
     '.mantine-Paper-root': {
-      flex: 1,
-      maxWidth: 1000,
-      maxHeight: 500,
-
       overflowY: 'scroll',
       ...addScrollBar(),
     },
@@ -87,8 +84,8 @@ const useMantineStyles = createStyles((theme) => ({
 
     marginBottom: 5,
 
-    'td:first-child': { borderRadius: '5px 0 0 5px' },
-    'td:last-child': { borderRadius: '0 5px 5px 0' },
+    'td:first-of-type': { borderRadius: '5px 0 0 5px' },
+    'td:last-of-type': { borderRadius: '0 5px 5px 0' },
   },
 
   action: {
@@ -100,13 +97,11 @@ const useMantineStyles = createStyles((theme) => ({
   },
 }));
 
-const fullDateParser = new Intl.DateTimeFormat('pt-BR', {
-  dateStyle: 'medium',
-});
-
 export function Appointments() {
   const { classes } = useMantineStyles();
-  const { openDate, setOpenDate } = useAppointmentStore();
+  const { openDate, closeModal, appointmentsModal } = useAppointmentStore();
+
+  const isMobile = useMediaQuery('(max-width: 50em)');
 
   const [isCancelOpen, setIsCancelOpen] = useDisclosure(false);
   const [selectedAppointment, setSelectedAppointment] = useState({
@@ -144,10 +139,17 @@ export function Appointments() {
   return (
     <>
       <Modal
-        opened={!!openDate}
-        onClose={() => setOpenDate(null)}
+        opened={appointmentsModal}
+        onClose={() => closeModal('appointments')}
         centered
-        title={'Agendamentos em ' + fullDateParser.format(openDate || undefined)}
+        title={'Agendamentos em ' + shortDatParser.format(openDate || undefined)}
+        fullScreen={isMobile}
+        size="80%"
+        styles={{
+          content: { height: '95%'},
+          body: { maxWidth: 1000, minWidth: 565, margin: 'auto' },
+          title: { flex: 1, textAlign: 'center' },
+        }}
         className={classes.modal}
       >         
         <Table sx={{ borderCollapse: 'separate', borderSpacing: '0 5px' }}>
