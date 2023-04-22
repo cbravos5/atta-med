@@ -37,9 +37,9 @@ export function NewMedicForm() {
     <Form style={{ gap: "0.5rem", height: 390 }} onSubmit={form.onSubmit(onSubmit)}>
       <Title order={4}>Novo médico</Title>
 
-      <TextInput label="Nome" placeholder="Nome" maxLength={100} required {...form.getInputProps("name")} />
+      <TextInput label="Nome" placeholder="Nome" maxLength={100} withAsterisk {...form.getInputProps("name")} />
 
-      <Input.Wrapper id="crm" label="CRM" required error={form.errors.crm}>
+      <Input.Wrapper id="crm" label="CRM" withAsterisk error={form.errors.crm}>
         <Input<any>
           component={IMaskInput}
           mask="CRM/{aa}-000000"

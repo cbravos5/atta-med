@@ -50,3 +50,5 @@ export default function Dashboard() {
     </PageContent>
   );
 }
+
+Dashboard.useLayout = true;

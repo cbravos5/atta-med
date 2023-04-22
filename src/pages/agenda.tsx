@@ -98,3 +98,5 @@ export default function Agenda() {
     </PageContent>
   );
 }
+
+Agenda.useLayout = true;

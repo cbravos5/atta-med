@@ -83,3 +83,5 @@ export default function Medics() {
     </PageContent>
   );
 }
+
+Medics.useLayout = true;

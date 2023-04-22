@@ -14,6 +14,9 @@ const useMantineStyles = createStyles((theme) => ({
     ".mantine-Input-input": {
       background: "#FFFFFFAA",
 
+      borderWidth: 2,
+      borderColor: theme.colors.gray[5],
+
       "&:focus-within, &:focus": {
         borderColor: theme.colors.primary[0],
       },

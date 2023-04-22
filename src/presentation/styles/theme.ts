@@ -10,7 +10,7 @@ export const theme: MantineThemeOverride = {
     primary: ["#62929E"],
     secondary: ["#FDFDFF"],
     tertiary: ["#546A7B"],
-    support: ["#393D3F", "#C6C5B9"],
+    support: ["#393D3F", "#C6C5B9", "#8c8c84"],
   },
 
   breakpoints: {

@@ -1,16 +1,27 @@
-import { Layout } from '@/presentation/components/Layout';
-import { theme } from '@/presentation/styles/theme';
-import { MantineProvider } from '@mantine/core';
-import { Notifications } from '@mantine/notifications';
-import type { AppProps } from 'next/app';
+import { Layout } from "@/presentation/components/Layout";
+import { theme } from "@/presentation/styles/theme";
+import { MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
+import type { AppProps } from "next/app";
+import { ReactElement, ReactNode } from "react";
 
-export default function App({ Component, pageProps }: AppProps) {
+interface CustomAppProps extends Omit<AppProps, "Component"> {
+  Component: AppProps["Component"] & { useLayout?: boolean };
+}
+
+export default function App({ Component, pageProps }: CustomAppProps) {
+  const { useLayout } = Component;
+
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
       <Notifications />
-      <Layout>
+      {useLayout ? (
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      ) : (
         <Component {...pageProps} />
-      </Layout>
+      )}
     </MantineProvider>
   );
 }
