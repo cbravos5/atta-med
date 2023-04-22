@@ -8,7 +8,7 @@ export const makeSearchMedics = (): SearchMedics => ({
       .fill(null)
       .map((_, i) => ({
         id: i.toString(),
-        name: "João da Silva de Jesus",
+        name: "João da Silva de Jesus " + i,
         crm: "CRM/SP-123456",
         specialty: "Neurologia",
       }));

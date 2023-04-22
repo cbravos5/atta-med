@@ -1,9 +1,11 @@
 import { Medic } from "@/domain/Models/Medic";
+import { searchMedics } from "@/main/Registry";
 import { PageContent } from "@/presentation/components/PageContent";
 import { SearchInput } from "@/presentation/components/SearchInput";
 import { mediaQuery } from "@/presentation/helpers/mediaQuery";
 import { NewMedicForm } from "@/presentation/medics/NewMedicForm";
 import { Badge, Box, Button, Card, Flex, Group, Text, Title, useMantineTheme } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { useCallback, useMemo, useState } from "react";
 
 export default function Medics() {
@@ -12,28 +14,16 @@ export default function Medics() {
   const [medics, setMedics] = useState([] as Medic[]);
   const [selectedMedic, setSelectedMedic] = useState(null as Medic | null);
 
-  const onSearchMedics = useCallback((searchValue: string) => {
-    setMedics([
-      {
-        name: "João Azevedo",
-        id: "90367753-c018-417c-a970-f3724797a4aa",
-        crm: "CRM/SP-123456",
-        specialty: "Cardiologia",
-      },
-      {
-        name: "Jorge Prado",
-        id: "90367753-c018-417c-a970-f3724797a4ba",
-        crm: "CRM/SP-123456",
-        specialty: "Cardiologia",
-      },
-      {
-        name: "Jonas Brother",
-        id: "90367753-c018-417c-a970-f3724797a4ca",
-        crm: "CRM/SP-123456",
-        specialty: "Cardiologia",
-      },
-      { name: "John Wick", id: "90367753-c018-417c-a970-f3724797a4da", crm: "CRM/SP-123456", specialty: "Cardiologia" },
-    ]);
+  const onSearchMedics = useCallback(async (searchValue: string) => {
+    try {
+      const response = await searchMedics.execute(searchValue);
+      setMedics(response);
+    } catch (error) {
+      notifications.show({
+        title: 'Erro!',
+        message: 'Occorreu um problema ao realizar a pesquisa'
+      })
+    }
   }, []);
 
   const medicsData = useMemo(() => medics.map((medic) => ({ value: medic.name, ...medic })), [medics]);

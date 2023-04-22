@@ -4,11 +4,14 @@ import { Button, Flex, Modal, Title } from "@mantine/core";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  onCancelAppointment: () => void;
+  onCancelAppointment: (id: string) => void;
   selectedAppointment: Appointment | null;
 };
 
 export function CancelAppointment({ isOpen, onClose, onCancelAppointment, selectedAppointment }: Props) {
+  
+  if (!selectedAppointment) return null;
+  
   return (
     <Modal opened={isOpen} onClose={onClose} size="md" centered overlayProps={{ zIndex: 201 }}>
       <Title order={4} fw={500} ta="center">
@@ -17,7 +20,7 @@ export function CancelAppointment({ isOpen, onClose, onCancelAppointment, select
           <Button color="red" onClick={onClose}>
             Não
           </Button>
-          <Button color="green" onClick={onCancelAppointment}>
+          <Button color="green" onClick={() => onCancelAppointment(selectedAppointment?.id)}>
             Sim
           </Button>
         </Flex>

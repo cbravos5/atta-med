@@ -8,7 +8,7 @@ export const makeSearchPatients = (): SearchPatients => ({
       .fill(null)
       .map((_, i) => ({
         id: i.toString(),
-        name: "João da Silva de Jesus",
+        name: "João da Silva de Jesus " + i,
         age: 24,
         gender: "male",
         cpf: "12345678910",

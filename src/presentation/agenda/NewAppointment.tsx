@@ -1,19 +1,23 @@
-import { shortDatParser } from "@/presentation/helpers/parsers";
 import { useAppointmentStore } from "@/presentation/store/appointment";
 import { ActionIcon, Button, createStyles, Modal } from "@mantine/core";
 import { TimeInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Clock } from "tabler-icons-react";
 import { Form } from "../components/Form";
 import { NewPatientAccordion } from "./NewPatientAccordion";
 import { SearchInput } from "../components/SearchInput";
+import { shortDateParser } from "../helpers/parsers";
+import { createAppointment, searchMedics, searchPatients } from "@/main/Registry";
+import { Medic } from "@/domain/Models/Medic";
+import { notifications } from "@mantine/notifications";
+import { Patient } from "@/domain/Models/Patient";
 
 type FormValues = {
   patient: string;
   medic: string;
-  time: string;
+  hour: string;
 };
 
 const useMantineStyles = createStyles((theme) => ({
@@ -32,44 +36,70 @@ export function NewAppointment() {
 
   const [isLoading, setIsLoading] = useDisclosure(false);
 
-  const [patients, setPatients] = useState([] as { value: string; id: string }[]);
-  const [medics, setMedics] = useState([] as { value: string; id: string }[]);
+  const [patients, setPatients] = useState([] as Patient[]);
+  const [medics, setMedics] = useState([] as Medic[]);
 
-  const timeInputRef = useRef<HTMLInputElement>(null);
+  const hourInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<FormValues>({
+    initialValues: {
+      hour: "",
+      medic: "",
+      patient: "",
+    },
     validateInputOnBlur: true,
     validate: {
       patient: (value) => (!!value ? null : "Campo obrigatório"),
       medic: (value) => (!!value ? null : "Campo obrigatório"),
-      time: (value) => (!!value ? null : "Campo obrigatório"),
+      hour: (value) => (!!value ? null : "Campo obrigatório"),
     },
   });
 
-  const onSearchPatients = useCallback((searchValue: string) => {
-    setPatients([
-      { value: "João Azevedo", id: "90367753-c018-417c-a970-f3724797a4aa" },
-      { value: "Jorge Prado", id: "90367753-c018-417c-a970-f3724797a4ba" },
-      { value: "Jonas Brother", id: "90367753-c018-417c-a970-f3724797a4ca" },
-      { value: "John Wick", id: "90367753-c018-417c-a970-f3724797a4da" },
-    ]);
+  const onSearchPatients = useCallback(async (searchValue: string) => {
+    try {
+      const response = await searchPatients.execute(searchValue);
+      setPatients(response);
+    } catch (error) {
+      notifications.show({
+        title: "Erro!",
+        message: "Occorreu um problema ao realizar a pesquisa",
+      });
+    }
   }, []);
 
-  const onSearchMedics = useCallback((searchValue: string) => {
-    setMedics([
-      { value: "João Azevedo", id: "90367753-c018-417c-a970-f3724797a4aa" },
-      { value: "Jorge Prado", id: "90367753-c018-417c-a970-f3724797a4ba" },
-      { value: "Jonas Brother", id: "90367753-c018-417c-a970-f3724797a4ca" },
-      { value: "John Wick", id: "90367753-c018-417c-a970-f3724797a4da" },
-    ]);
+  const onSearchMedics = useCallback(async (searchValue: string) => {
+    try {
+      const response = await searchMedics.execute(searchValue);
+      setMedics(response);
+    } catch (error) {
+      notifications.show({
+        title: "Erro!",
+        message: "Occorreu um problema ao realizar a pesquisa",
+      });
+    }
   }, []);
 
-  const onSubmit = useCallback((data: FormValues) => {
+  const patientsData = useMemo(() => patients.map((patient) => ({ value: patient.name, ...patient })), [patients]);
+  const medicsData = useMemo(() => medics.map((medic) => ({ value: medic.name, ...medic })), [medics]);
+
+  const onSubmit = useCallback(async (data: FormValues) => {
     setIsLoading.open();
-    console.log(data);
-    form.reset();
-    closeModal("newAppointment");
-    setIsLoading.close();
+    try {
+      await createAppointment.execute(data);
+      form.reset();
+      closeModal("newAppointment");
+      notifications.show({
+        title: "Sucesso!",
+        message: "Novo agendamento criado",
+      });
+    } catch (error: any) {
+      notifications.show({
+        title: "Erro!",
+        message: error?.message,
+      });
+    } finally {
+      setIsLoading.close();
+    }
   }, []);
 
   return (
@@ -77,7 +107,7 @@ export function NewAppointment() {
       opened={newAppointmentModal}
       centered
       onClose={() => closeModal("newAppointment")}
-      title={"Novo agendamento em " + shortDatParser.format(openDate || undefined)}
+      title={"Novo agendamento em " + shortDateParser.format(openDate || undefined)}
       className={classes.modal}
       fullScreen={isMobile}
       size="80%"
@@ -87,13 +117,13 @@ export function NewAppointment() {
         title: { flex: 1, textAlign: "center" },
       }}
     >
-      <NewPatientAccordion onCreatePatient={() => {}} />
-      <Form onSubmit={form.onSubmit((values) => console.log(values))} style={{ marginTop: "1.5rem" }}>
+      <NewPatientAccordion />
+      <Form onSubmit={form.onSubmit(onSubmit)} style={{ marginTop: "1.5rem" }}>
         <SearchInput
           label="Paciente"
-          required
+          withAsterisk
           placeholder="Nome ou CPF"
-          data={patients}
+          data={patientsData}
           onSearch={onSearchPatients}
           onItemSubmit={(item) => form.setFieldValue("patient", item.id)}
           error={form.errors.patient}
@@ -101,9 +131,9 @@ export function NewAppointment() {
 
         <SearchInput
           label="Médico"
-          required
+          withAsterisk
           placeholder="Nome ou CRM"
-          data={medics}
+          data={medicsData}
           onSearch={onSearchMedics}
           onItemSubmit={(item) => form.setFieldValue("medic", item.id)}
           error={form.errors.medic}
@@ -112,17 +142,17 @@ export function NewAppointment() {
         <TimeInput
           label="Horário"
           aria-label="Horário"
-          ref={timeInputRef}
-          required
+          ref={hourInputRef}
+          withAsterisk
           rightSection={
-            <ActionIcon onClick={() => timeInputRef.current?.showPicker()}>
+            <ActionIcon onClick={() => hourInputRef.current?.showPicker()}>
               <Clock size="1rem" />
             </ActionIcon>
           }
-          {...form.getInputProps("time")}
+          {...form.getInputProps("hour")}
         />
 
-        <Button variant="outline" sx={{ alignSelf: "end" }} type="submit" disabled={isLoading}>
+        <Button variant="outline" sx={{ alignSelf: "end" }} type="submit" loading={isLoading}>
           Criar
         </Button>
       </Form>

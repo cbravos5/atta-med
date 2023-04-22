@@ -1,36 +1,30 @@
 import { Gender } from "@/domain/Models/Gender";
 import { Patient } from "@/domain/Models/Patient";
+import { createPatient } from "@/main/Registry";
 import { Box, Button, Collapse, Group, Input, NumberInput, Select, TextInput, useMantineTheme } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 import { cpf } from "cpf-cnpj-validator";
 import { useCallback } from "react";
 import { IMaskInput } from "react-imask";
 import { Plus } from "tabler-icons-react";
 import { Form } from "../components/Form";
 
-type Props = {
-  onCreatePatient: (value: Patient) => void;
-};
 
-type FormValues = {
-  name: string;
-  age: number;
-  cpf: string;
-  gender: keyof typeof Gender;
-};
+type FormValues = Omit<Patient, "id">;
 
-export function NewPatientAccordion({ onCreatePatient }: Props) {
+export function NewPatientAccordion() {
   const [opened, { toggle, close }] = useDisclosure(false);
   const [isLoading, setIsLoading] = useDisclosure(false);
   const theme = useMantineTheme();
 
   const form = useForm<FormValues>({
     initialValues: {
-      name: '',
+      name: "",
       age: 0,
-      cpf: '',
-      gender: 'other'
+      cpf: "",
+      gender: "other",
     },
     validateInputOnBlur: true,
     validate: {
@@ -40,13 +34,24 @@ export function NewPatientAccordion({ onCreatePatient }: Props) {
     },
   });
 
-  const onSubmit = useCallback((data: FormValues) => {
+  const onSubmit = useCallback(async (data: FormValues) => {
     setIsLoading.open();
-    console.log(data);
-    onCreatePatient({ ...data, id: "3ac97189-0754-4abf-92b5-f78008694acb" });
-    form.reset();
-    close();
-    setIsLoading.close();
+    try {
+      await createPatient.execute(data);
+      form.reset();
+      close();
+      notifications.show({
+        title: "Sucesso!",
+        message: 'Novo paciente criado',
+      });
+    } catch (error: any) {
+      notifications.show({
+        title: "Erro!",
+        message: error?.message,
+      });
+    } finally {
+      setIsLoading.close();
+    }
   }, []);
 
   return (
@@ -57,7 +62,6 @@ export function NewPatientAccordion({ onCreatePatient }: Props) {
 
       <Collapse in={opened} bg={theme.fn.rgba(theme.colors.primary[0], 0.3)} mt="md" sx={{ borderRadius: 10 }}>
         <Form style={{ gap: "0.5rem" }} onSubmit={form.onSubmit(onSubmit)}>
-
           <TextInput label="Nome" placeholder="Nome" maxLength={100} required {...form.getInputProps("name")} />
 
           <NumberInput label="Idade" placeholder="Idade" maxLength={3} required {...form.getInputProps("age")} />
@@ -84,7 +88,7 @@ export function NewPatientAccordion({ onCreatePatient }: Props) {
             {...form.getInputProps("gender")}
           />
 
-          <Button variant="outline" mt="lg" mx="auto" display="block" type="submit" disabled={isLoading}>
+          <Button variant="outline" mt="lg" mx="auto" display="block" type="submit" loading={isLoading}>
             Salvar
           </Button>
         </Form>

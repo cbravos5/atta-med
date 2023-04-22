@@ -1,7 +1,7 @@
 import { Appointment } from "@/domain/Models/Appointment";
-import { getAppointments } from "@/main/Registry";
+import { cancelAppointment, getAppointments } from "@/main/Registry";
 import { addScrollBar } from "@/presentation/helpers/addScrollBar";
-import { shortDatParser, timeParser } from "@/presentation/helpers/parsers";
+import { shortDateParser, timeParser } from "@/presentation/helpers/parsers";
 import { useAppointmentStore } from "@/presentation/store/appointment";
 import { ActionIcon, Center, createStyles, Loader, Modal, Skeleton, Table } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
@@ -74,7 +74,6 @@ export function Appointments() {
   );
 
   const onGetAppointments = useCallback(async (date: Date) => {
-    console.log("salve");
     setIsLoading.open();
     try {
       const response = await getAppointments.execute(date);
@@ -90,6 +89,23 @@ export function Appointments() {
     }
   }, []);
 
+  const onCancelAppointment = useCallback(async (id: string) => {
+    setIsLoading.open();
+    try {
+      await cancelAppointment.execute(id);
+
+      if (openDate) onGetAppointments(openDate);
+    } catch (error) {
+      notifications.show({
+        title: "Erro",
+        message: "Ocorreu um problema ao buscar pelos agendamentos!",
+      });
+      setIsLoading.close();
+    } finally {
+      setIsCancelOpen.close();
+    }
+  },[openDate]);
+
   useEffect(() => {
     if (openDate && appointmentsModal) onGetAppointments(openDate);
   }, [openDate, appointmentsModal]);
@@ -100,7 +116,7 @@ export function Appointments() {
         opened={appointmentsModal}
         onClose={() => closeModal("appointments")}
         centered
-        title={"Agendamentos em " + shortDatParser.format(openDate || undefined)}
+        title={"Agendamentos em " + shortDateParser.format(openDate || undefined)}
         fullScreen={isMobile}
         size="80%"
         styles={{
@@ -130,7 +146,7 @@ export function Appointments() {
         onClose={setIsCancelOpen.close}
         isOpen={isCancelOpen}
         selectedAppointment={selectedAppointment}
-        onCancelAppointment={setIsCancelOpen.close}
+        onCancelAppointment={onCancelAppointment}
       />
     </>
   );

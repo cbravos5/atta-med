@@ -1,7 +1,9 @@
 import { Medic } from "@/domain/Models/Medic";
+import { createMedic } from "@/main/Registry";
 import { Button, Input, Select, TextInput, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 import { useCallback } from "react";
 import { IMaskInput } from "react-imask";
 import { Form } from "../components/Form";
@@ -13,9 +15,9 @@ export function NewMedicForm() {
 
   const form = useForm<FormValues>({
     initialValues: {
-      name: '',
-      crm: '',
-      specialty: 'Cardiologia',
+      name: "",
+      crm: "",
+      specialty: "Cardiologia",
     },
     validateInputOnBlur: true,
     validate: {
@@ -25,12 +27,24 @@ export function NewMedicForm() {
     },
   });
 
-  const onSubmit = useCallback((data: FormValues) => {
+  const onSubmit = useCallback(async (data: FormValues) => {
     setIsLoading.open();
-    console.log(data);
 
-    form.reset();
-    setIsLoading.close();
+    try {
+      await createMedic.execute(data);
+      form.reset();
+      notifications.show({
+        title: "Sucesso!",
+        message: "Novo médico adicionado",
+      });
+    } catch (error: any) {
+      notifications.show({
+        title: "Erro!",
+        message: error?.message,
+      });
+    } finally {
+      setIsLoading.close();
+    }
   }, []);
 
   return (
@@ -63,7 +77,7 @@ export function NewMedicForm() {
         {...form.getInputProps("specialty")}
       />
 
-      <Button variant="outline" mt="lg" mx="auto" display="block" type="submit" disabled={isLoading}>
+      <Button variant="outline" mt="lg" mx="auto" display="block" type="submit" loading={isLoading}>
         Salvar
       </Button>
     </Form>

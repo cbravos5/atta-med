@@ -14,7 +14,7 @@ export const storage = makeSessionStorageAdapter();
 
 export const getAppointments = makeGetAppointments();
 
-export const cancelAppoints = makeCancelAppointment();
+export const cancelAppointment = makeCancelAppointment();
 
 export const createAppointment = makeCreateAppointment();
 
