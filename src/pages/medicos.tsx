@@ -42,15 +42,9 @@ export default function Medics() {
     <PageContent pageTitle="Registro de Médicos">
       <Flex
         w="100%"
-        align="center"
         justify="center"
-        direction="column"
-        sx={{
-          [mediaQuery(theme.breakpoints.md)]: {
-            flexDirection: "row",
-            alignItems: 'start'
-          },
-        }}
+        align={{ base: 'center', md: 'start' }}
+        direction={{ base: 'column', md: 'row' }}
       >
         <Flex direction="column" gap="lg" p="1rem">
           <Title order={4}>Pesquisar médico</Title>
