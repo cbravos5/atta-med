@@ -18,7 +18,8 @@ export const makeGetAppointments = (): GetAppointments => ({
       medic: {
         id: i.toString(),
         name: "João da Silva de Jesus",
-        crm: 'CRM/SP-123456'
+        crm: 'CRM/SP-123456',
+        specialty: 'Neurologia'
       }
     }))
   } 
