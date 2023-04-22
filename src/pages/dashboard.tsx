@@ -2,18 +2,64 @@ import { addScrollBar } from "@/presentation/helpers/addScrollBar";
 import { mediaQuery } from "@/presentation/helpers/mediaQuery";
 import { AppointmentsTable } from "@/presentation/dashboard/AppointmentsTable";
 import { PageContent } from "@/presentation/components/PageContent";
-import { Space } from "@mantine/core";
+import { Skeleton, Space } from "@mantine/core";
 import { Accordion, Box, Divider, Flex, Title, useMantineTheme } from "@mantine/core";
 import { CountingCard } from "@/presentation/dashboard/CountingCard";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useDisclosure } from "@mantine/hooks";
+import { Appointment } from "@/domain/Models/Appointment";
+import { getAppointments } from "@/main/Registry";
+import { notifications } from "@mantine/notifications";
 
 export default function Dashboard() {
   const theme = useMantineTheme();
+  const [isLoading, setIsLoading] = useDisclosure(true);
+
+  const [appointments, setAppointments] = useState([] as Appointment[]);
+
+  const onGetAppointments = useCallback(async (date: Date) => {
+    setIsLoading.open();
+    try {
+      const response = await getAppointments.execute(date);
+
+      setAppointments(response);
+    } catch (error) {
+      notifications.show({
+        title: "Erro",
+        message: "Ocorreu um problema ao buscar pelos agendamentos!",
+      });
+    } finally {
+      setIsLoading.close();
+    }
+  }, []);
+
+  useEffect(() => {
+    onGetAppointments(new Date());
+  }, []);
+
+  const appointmentsByMedic = useMemo(
+    () =>
+      appointments.reduce((group, appointment) => {
+        const {
+          medic: { name },
+        } = appointment;
+        group[name] = group[name] ?? [];
+        group[name].push(appointment);
+        return group;
+      }, {} as { [key: string]: Appointment[] }),
+    [appointments]
+  );
+
+  const todayAppointments = useMemo(
+    () => appointments.filter(({ isCancelled }) => !isCancelled),
+    [appointments]
+  );
 
   return (
     <PageContent pageTitle="Dashboard" w="75%" maw={1200} miw={600}>
       <Flex direction="column" gap="lg" sx={{ [mediaQuery(theme.breakpoints.md)]: { flexDirection: "row" } }}>
-        <CountingCard label="Agendamentos hoje" value={32} />
-        <CountingCard label="Cancelamentos hoje" value={5} />
+        <CountingCard label="Agendamentos hoje" value={todayAppointments.length} />
+        <CountingCard label="Cancelamentos hoje" value={appointments.length - todayAppointments.length} />
       </Flex>
 
       <Space h="lg" />
@@ -23,30 +69,22 @@ export default function Dashboard() {
       </Title>
       <Divider color="gray" size="xs" w="100%" />
 
-      <Box w="100%" miw={600} mih={250} h="30vh" mah={400} sx={{ overflowY: "auto", ...addScrollBar() }}>
-        <Accordion w="100%" maw="100%">
-          <Accordion.Item value="1234567">
-            <Accordion.Control>Dr. José Wilcker - CRM 1234567</Accordion.Control>
-            <Accordion.Panel>
-              <AppointmentsTable />
-            </Accordion.Panel>
-          </Accordion.Item>
-
-          <Accordion.Item value="flexibility">
-            <Accordion.Control>Dr. Ramos da Costa - CRM 1784567</Accordion.Control>
-            <Accordion.Panel>
-              <AppointmentsTable />
-            </Accordion.Panel>
-          </Accordion.Item>
-
-          <Accordion.Item value="focus-ring">
-            <Accordion.Control>Dra. Maria Antonieta da Silva - CRM 1784437</Accordion.Control>
-            <Accordion.Panel>
-              <AppointmentsTable />
-            </Accordion.Panel>
-          </Accordion.Item>
-        </Accordion>
-      </Box>
+      <Skeleton visible={isLoading}>
+        <Box w="100%" miw={600} mih={250} h="30vh" mah={400} sx={{ overflowY: "auto", ...addScrollBar() }}>
+          <Accordion w="100%" maw="100%">
+            {Object.keys(appointmentsByMedic).map((key, i) => (
+              <Accordion.Item value={key + i}>
+                <Accordion.Control>
+                  {appointmentsByMedic[key].at(0)?.medic.name + " " + appointmentsByMedic[key].at(0)?.medic.crm}
+                </Accordion.Control>
+                <Accordion.Panel>
+                  <AppointmentsTable appointments={appointmentsByMedic[key]} />
+                </Accordion.Panel>
+              </Accordion.Item>
+            ))}
+          </Accordion>
+        </Box>
+      </Skeleton>
     </PageContent>
   );
 }

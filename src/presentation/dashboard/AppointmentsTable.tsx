@@ -1,57 +1,11 @@
+import { Appointment } from "@/domain/Models/Appointment";
 import { createStyles, Table } from "@mantine/core";
-import { useId } from "react";
 import { AppointmentRow } from "../components/AppointmentRow";
+import { timeParser } from "../helpers/parsers";
 
-const elements = [
-  {
-    name: "João da Silva de Jesus",
-    age: 24,
-    gender: "Masculino",
-    time: "09:30",
-  },
-  {
-    name: "João da Silva de Jesus",
-    age: 24,
-    gender: "Masculino",
-    time: "10:30",
-  },
-  {
-    name: "João da Silva de Jesus",
-    age: 24,
-    gender: "Masculino",
-    time: "11:30",
-  },
-  {
-    name: "João da Silva de Jesus",
-    age: 24,
-    gender: "Masculino",
-    time: "12:30",
-  },
-  {
-    name: "João da Silva de Jesus",
-    age: 24,
-    gender: "Masculino",
-    time: "13:30",
-  },
-  {
-    name: "João da Silva de Jesus",
-    age: 24,
-    gender: "Masculino",
-    time: "14:30",
-  },
-  {
-    name: "João da Silva de Jesus",
-    age: 24,
-    gender: "Masculino",
-    time: "15:30",
-  },
-  {
-    name: "João da Silva de Jesus",
-    age: 24,
-    gender: "Masculino",
-    time: "16:30",
-  },
-];
+type Props = {
+  appointments: Appointment[];
+}
 
 const useMantineStyles = createStyles((theme) => ({
   header: {
@@ -62,17 +16,14 @@ const useMantineStyles = createStyles((theme) => ({
   },
 }));
 
-export function AppointmentsTable() {
+export function AppointmentsTable({ appointments }: Props) {
   const { classes } = useMantineStyles();
-
-  const id = useId();
-
-  const rows = elements.map((element) => (
-    <AppointmentRow key={element.name + id}>
-      <td>{element.name}</td>
-      <td>{element.age}</td>
-      <td>{element.gender}</td>
-      <td>{element.time}</td>
+  const rows = appointments.map((appointment) => (
+    <AppointmentRow key={appointment.id}>
+      <td>{appointment.patient.name}</td>
+      <td>{appointment.patient.age}</td>
+      <td>{appointment.patient.gender}</td>
+      <td>{timeParser.format(appointment.when)}</td>
     </AppointmentRow>
   ));
 

@@ -1,3 +1,4 @@
+import { login } from "@/main/Registry";
 import { Form } from "@/presentation/components/Form";
 import { Logo } from "@/presentation/components/Logo";
 import { mediaQuery } from "@/presentation/helpers/mediaQuery";
@@ -14,6 +15,8 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+import Router from "next/router";
 import { useCallback } from "react";
 
 type FormValues = {
@@ -88,11 +91,20 @@ export default function Login() {
     },
   });
 
-  const onSubmit = useCallback((data: FormValues) => {
+  const onSubmit = useCallback(async (data: FormValues) => {
     setIsLoading.open();
-    console.log(data);
-    form.reset();
-    setIsLoading.close();
+    try {
+      await login.execute(data);
+
+      Router.push('/dashboard');
+    } catch (error: any) {
+      notifications.show({
+        title: 'Erro!',
+        message: error?.message
+      })      
+    } finally {
+      setIsLoading.close();
+    }
   }, []);
 
   return (
@@ -128,4 +140,3 @@ export default function Login() {
 }
 
 Login.useLayout = false;
-Login.auth = false;
