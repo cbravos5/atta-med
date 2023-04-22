@@ -128,3 +128,4 @@ export default function Login() {
 }
 
 Login.useLayout = false;
+Login.auth = false;
