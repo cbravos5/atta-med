@@ -53,7 +53,7 @@ export function Appointments() {
   const rows = useMemo(
     () =>
       appointments.map((appointment) => (
-        <AppointmentRow key={appointment.id}>
+        <AppointmentRow key={appointment.id} isCancelled={appointment.isCancelled}>
           <td>{appointment.patient.name}</td>
           <td>{appointment.patient.age}</td>
           <td>{Gender[appointment.patient.gender]}</td>

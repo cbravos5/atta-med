@@ -1,11 +1,13 @@
 import { createStyles } from "@mantine/core";
 import { HTMLProps } from "react";
 
+type Props = {
+  isCancelled?: boolean;
+} & HTMLProps<HTMLTableRowElement>;
+
 const useMantineStyles = createStyles((theme) => ({
   row: {
     color: theme.colors.secondary[0],
-
-    backgroundColor: theme.fn.rgba(theme.colors.primary[0], 0.8),
 
     marginBottom: 5,
 
@@ -14,10 +16,18 @@ const useMantineStyles = createStyles((theme) => ({
 
     td: { fontSize: "1.2rem !important" },
   },
+  active: {
+    backgroundColor: theme.fn.rgba(theme.colors.primary[0], 0.8),
+  },
+  cancelled: {
+    backgroundColor: theme.colors.red[6],
+  },
 }));
 
-export function AppointmentRow(props: HTMLProps<HTMLTableRowElement>) {
+export function AppointmentRow({ isCancelled, ...props }: Props) {
   const { classes } = useMantineStyles();
 
-  return <tr {...props} className={classes.row} />;
+  const colorClass = isCancelled ? classes.cancelled : classes.active;
+
+  return <tr {...props} className={classes.row + " " + colorClass} />;
 }
