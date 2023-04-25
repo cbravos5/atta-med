@@ -1,17 +1,5 @@
-import { SearchPatients } from "@/domain/useCases/search-patients";
+import { RemoteSearchPatients } from "@/data/useCases/search-patients";
+import { makeAuthorizeHttpClientDecorator } from "../decorators/authorize-http-client-decorator-factory";
+import { makeApiUrl } from "../http/api-url-factory";
 
-export const makeSearchPatients = (): SearchPatients => ({
-  async execute(searchText) {
-    await new Promise((r) => setTimeout(r, 1500));
-
-    return Array(7)
-      .fill(null)
-      .map((_, i) => ({
-        id: i.toString(),
-        name: "João da Silva de Jesus " + i,
-        age: 24,
-        gender: "male",
-        cpf: "12345678910",
-      }));
-  },
-});
+export const makeSearchPatients = () => new RemoteSearchPatients(makeApiUrl('/patients'), makeAuthorizeHttpClientDecorator())

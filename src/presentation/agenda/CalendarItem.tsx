@@ -29,7 +29,7 @@ export function CalendarItem({ date }: Props) {
   const { setOpenDate, openModal } = useAppointmentStore();
 
   const isEmpty = !date;
-
+  
   return (
     <Card
       bg="transparent"

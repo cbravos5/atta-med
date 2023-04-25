@@ -16,9 +16,9 @@ import { Patient } from "@/domain/Models/Patient";
 import { GetAvailableHours } from "@/domain/useCases/get-available-hours";
 
 type FormValues = {
-  patient: string;
-  medic: string;
-  hour: string;
+  patient: { id: string; name: string };
+  medic: { id: string; name: string };
+  when: string;
 };
 
 const useMantineStyles = createStyles((theme) => ({
@@ -44,15 +44,15 @@ export function NewAppointment() {
 
   const form = useForm<FormValues>({
     initialValues: {
-      hour: "",
-      medic: "",
-      patient: "",
+      when: "",
+      medic: { id: '', name: '' },
+      patient: { id: '', name: '' },
     },
     validateInputOnBlur: true,
     validate: {
-      patient: (value) => (!!value ? null : "Campo obrigatório"),
-      medic: (value) => (!!value ? null : "Campo obrigatório"),
-      hour: (value) => (!!value ? null : "Campo obrigatório"),
+      patient: (value) => (!!value.id ? null : "Campo obrigatório"),
+      medic: (value) => (!!value.id ? null : "Campo obrigatório"),
+      when: (value) => (!!value ? null : "Campo obrigatório"),
     },
   });
 
@@ -91,7 +91,7 @@ export function NewAppointment() {
       }));
 
       setAvailableHours(remmapedResponse);
-      form.setFieldValue('hour', remmapedResponse[0].value);
+      form.setFieldValue('when', remmapedResponse[0].value);
     } catch (error) {
     } finally {
       setIsLoading.close();
@@ -104,7 +104,7 @@ export function NewAppointment() {
   const onSubmit = useCallback(async (data: FormValues) => {
     setIsLoading.open();
     try {
-      await createAppointment.execute(data);
+      await createAppointment.execute({ when: data.when, medicId: data.medic.id, patientId: data.patient.id });
       form.reset();
       closeModal("newAppointment");
       notifications.show({
@@ -121,16 +121,14 @@ export function NewAppointment() {
     }
   }, []);
 
-  useEffect(() => {
-    if (form.values.medic && openDate && newAppointmentModal)
-      onGetAvailableHours({ medicId: form.values.medic, when: openDate });
-  }, [form.values.medic, openDate, newAppointmentModal]);
-
   return (
     <Modal
       opened={newAppointmentModal}
       centered
-      onClose={() => closeModal("newAppointment")}
+      onClose={() => {
+        closeModal("newAppointment");
+        form.reset();
+      }}
       title={"Novo agendamento em " + shortDateParser.format(openDate || undefined)}
       className={classes.modal}
       fullScreen={isMobile}
@@ -145,32 +143,37 @@ export function NewAppointment() {
       <Form onSubmit={form.onSubmit(onSubmit)} style={{ marginTop: "1.5rem" }}>
         <SearchInput
           label="Paciente"
+          description={form.values.patient.name}
           withAsterisk
           placeholder="Nome ou CPF"
           data={patientsData}
           onSearch={onSearchPatients}
-          onItemSubmit={(item) => form.setFieldValue("patient", item.id)}
+          onItemSubmit={(item) => form.setFieldValue("patient", { id: item.id, name: item.name })}
           error={form.errors.patient}
         />
 
         <SearchInput
           label="Médico"
+          description={form.values.medic.name}
           withAsterisk
           placeholder="Nome ou CRM"
           data={medicsData}
           onSearch={onSearchMedics}
-          onItemSubmit={(item) => form.setFieldValue("medic", item.id)}
+          onItemSubmit={(item) =>{
+            form.setFieldValue("medic", { id: item.id, name: item.name });
+            openDate && onGetAvailableHours({ medicId:item.id, when: openDate });
+          }}
           error={form.errors.medic}
         />
 
         <Select
           label="Horário"
-          description="Selecione um médico para ver a lista de horário disponíveis"
+          description="Selecione um médico para ver a lista de horários disponíveis"
           aria-label="Horário"
           withAsterisk
           data={availableHours}
-          disabled={!form.values.medic}
-          {...form.getInputProps("hour")}
+          disabled={!form.values.medic.id}
+          {...form.getInputProps("when")}
         />
 
         <Button variant="outline" sx={{ alignSelf: "end" }} type="submit" loading={isLoading}>

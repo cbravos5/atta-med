@@ -6,9 +6,9 @@ export interface CreateAppointment {
 
 export namespace CreateAppointment {
   export type Request = {
-    patient: string;
-    medic: string;
-    hour: string;
+    patientId: string;
+    medicId: string;
+    when: string;
   };
 
   export type Response = Appointment;

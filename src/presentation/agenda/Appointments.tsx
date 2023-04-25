@@ -57,17 +57,19 @@ export function Appointments() {
           <td>{appointment.patient.name}</td>
           <td>{appointment.patient.age}</td>
           <td>{Gender[appointment.patient.gender]}</td>
-          <td>{timeParser.format(appointment.when)}</td>
+          <td>{timeParser.format(new Date(appointment.when))}</td>
           <td>
-            <ActionIcon
-              className={classes.action}
-              onClick={() => {
-                setSelectedAppointment(appointment);
-                setIsCancelOpen.open();
-              }}
-            >
-              <X />
-            </ActionIcon>
+            {!appointment.isCancelled && (
+              <ActionIcon
+                className={classes.action}
+                onClick={() => {
+                  setSelectedAppointment(appointment);
+                  setIsCancelOpen.open();
+                }}
+              >
+                <X />
+              </ActionIcon>
+            )}
           </td>
         </AppointmentRow>
       )),
@@ -90,22 +92,25 @@ export function Appointments() {
     }
   }, []);
 
-  const onCancelAppointment = useCallback(async (id: string) => {
-    setIsLoading.open();
-    try {
-      await cancelAppointment.execute(id);
+  const onCancelAppointment = useCallback(
+    async (id: string) => {
+      setIsLoading.open();
+      try {
+        await cancelAppointment.execute(id);
 
-      if (openDate) onGetAppointments(openDate);
-    } catch (error) {
-      notifications.show({
-        title: "Erro",
-        message: "Ocorreu um problema ao buscar pelos agendamentos!",
-      });
-      setIsLoading.close();
-    } finally {
-      setIsCancelOpen.close();
-    }
-  },[openDate]);
+        if (openDate) onGetAppointments(openDate);
+      } catch (error) {
+        notifications.show({
+          title: "Erro",
+          message: "Ocorreu um problema ao buscar pelos agendamentos!",
+        });
+        setIsLoading.close();
+      } finally {
+        setIsCancelOpen.close();
+      }
+    },
+    [openDate]
+  );
 
   useEffect(() => {
     if (openDate && appointmentsModal) onGetAppointments(openDate);

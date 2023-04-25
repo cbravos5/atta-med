@@ -1,15 +1,6 @@
-import { CreatePatient } from "@/domain/useCases/create-patient";
+import { RemoteCreatePatient } from "@/data/useCases/create-patient";
+import { makeAuthorizeHttpClientDecorator } from "../decorators/authorize-http-client-decorator-factory";
+import { makeApiUrl } from "../http/api-url-factory";
 
-export const makeCreatePatient = (): CreatePatient => ({
-  async execute(props) {
-    await new Promise((r) => setTimeout(r, 1500));
-
-    return {
-      id: "20f52299-ff05-43f1-8f48-557b28ede522",
-      name: "João da Silva de Jesus",
-      age: 24,
-      gender: "male",
-      cpf: "12345678910",
-    };
-  },
-});
+export const makeCreatePatient = () =>
+  new RemoteCreatePatient(makeApiUrl("/patients"), makeAuthorizeHttpClientDecorator());
