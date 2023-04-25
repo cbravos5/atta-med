@@ -1,4 +1,5 @@
 import { Appointment } from "@/domain/Models/Appointment";
+import { Gender } from "@/domain/Models/Gender";
 import { cancelAppointment, getAppointments } from "@/main/Registry";
 import { addScrollBar } from "@/presentation/helpers/addScrollBar";
 import { shortDateParser, timeParser } from "@/presentation/helpers/parsers";
@@ -55,7 +56,7 @@ export function Appointments() {
         <AppointmentRow key={appointment.id}>
           <td>{appointment.patient.name}</td>
           <td>{appointment.patient.age}</td>
-          <td>{appointment.patient.gender}</td>
+          <td>{Gender[appointment.patient.gender]}</td>
           <td>{timeParser.format(appointment.when)}</td>
           <td>
             <ActionIcon

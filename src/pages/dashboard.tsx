@@ -73,7 +73,7 @@ export default function Dashboard() {
         <Box w="100%" miw={600} mih={250} h="30vh" mah={400} sx={{ overflowY: "auto", ...addScrollBar() }}>
           <Accordion w="100%" maw="100%">
             {Object.keys(appointmentsByMedic).map((key, i) => (
-              <Accordion.Item value={key + i}>
+              <Accordion.Item value={key + i} key={key + i}>
                 <Accordion.Control>
                   {appointmentsByMedic[key].at(0)?.medic.name + " " + appointmentsByMedic[key].at(0)?.medic.crm}
                 </Accordion.Control>

@@ -25,6 +25,7 @@ export function NavMenu(props: Omit<ComponentProps<typeof Navbar>, "children">) 
       <Navbar.Section grow>
         {routes.map(({ label, route, icon }) => (
           <NavLink
+            key={label + route}
             component={Link}
             href={route}
             label={label}

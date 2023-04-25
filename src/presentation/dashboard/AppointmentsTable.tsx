@@ -1,4 +1,5 @@
 import { Appointment } from "@/domain/Models/Appointment";
+import { Gender } from "@/domain/Models/Gender";
 import { createStyles, Table } from "@mantine/core";
 import { AppointmentRow } from "../components/AppointmentRow";
 import { timeParser } from "../helpers/parsers";
@@ -22,8 +23,8 @@ export function AppointmentsTable({ appointments }: Props) {
     <AppointmentRow key={appointment.id}>
       <td>{appointment.patient.name}</td>
       <td>{appointment.patient.age}</td>
-      <td>{appointment.patient.gender}</td>
-      <td>{timeParser.format(appointment.when)}</td>
+      <td>{Gender[appointment.patient.gender]}</td>
+      <td>{timeParser.format(new Date(appointment.when))}</td>
     </AppointmentRow>
   ));
 

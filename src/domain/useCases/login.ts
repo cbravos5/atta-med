@@ -4,7 +4,7 @@ export interface Login {
 
 export namespace Login {
   export type Props = {
-    login: string;
+    email: string;
     password: string;
   }
 

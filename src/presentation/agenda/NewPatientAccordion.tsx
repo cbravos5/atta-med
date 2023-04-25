@@ -24,7 +24,7 @@ export function NewPatientAccordion() {
       name: "",
       age: 0,
       cpf: "",
-      gender: "other",
+      gender: "OTHER",
     },
     validateInputOnBlur: true,
     validate: {
@@ -81,9 +81,9 @@ export function NewPatientAccordion() {
             placeholder="Sexo"
             defaultValue="other"
             data={[
-              { value: "male", label: "Masculino" },
-              { value: "female", label: "Feminino" },
-              { value: "other", label: "Outro" },
+              { value: "MALE", label: "Masculino" },
+              { value: "FEMALE", label: "Feminino" },
+              { value: "OTHER", label: "Outro" },
             ]}
             {...form.getInputProps("gender")}
           />

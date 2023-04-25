@@ -20,7 +20,7 @@ import Router from "next/router";
 import { useCallback } from "react";
 
 type FormValues = {
-  login: string;
+  email: string;
   password: string;
 };
 
@@ -82,11 +82,11 @@ export default function Login() {
 
   const form = useForm<FormValues>({
     initialValues: {
-      login: "",
+      email: "",
       password: "",
     },
     validate: {
-      login: (value) => (!!value ? null : "Campo obrigatório"),
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Deve ser um e-email válido"),
       password: (value) => (!!value ? null : "Campo obrigatório"),
     },
   });
@@ -96,12 +96,12 @@ export default function Login() {
     try {
       await login.execute(data);
 
-      Router.push('/dashboard');
+      Router.push("/dashboard");
     } catch (error: any) {
       notifications.show({
-        title: 'Erro!',
-        message: error?.message
-      })      
+        title: "Erro!",
+        message: 'Credenciais inválidas',
+      });
     } finally {
       setIsLoading.close();
     }
@@ -118,7 +118,7 @@ export default function Login() {
         </Title>
 
         <Form onSubmit={form.onSubmit(onSubmit)}>
-          <TextInput placeholder="login" withAsterisk size="md" {...form.getInputProps("login")} />
+          <TextInput placeholder="email" withAsterisk size="md" {...form.getInputProps("email")} />
 
           <PasswordInput
             placeholder="Senha"
