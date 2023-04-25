@@ -1,18 +1,19 @@
 import { useAppointmentStore } from "@/presentation/store/appointment";
-import { ActionIcon, Button, createStyles, Modal } from "@mantine/core";
+import { ActionIcon, Button, createStyles, Modal, Select } from "@mantine/core";
 import { TimeInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Clock } from "tabler-icons-react";
 import { Form } from "../components/Form";
 import { NewPatientAccordion } from "./NewPatientAccordion";
 import { SearchInput } from "../components/SearchInput";
-import { shortDateParser } from "../helpers/parsers";
-import { createAppointment, searchMedics, searchPatients } from "@/main/Registry";
+import { shortDateParser, timeParser } from "../helpers/parsers";
+import { createAppointment, getAvailableHours, searchMedics, searchPatients } from "@/main/Registry";
 import { Medic } from "@/domain/Models/Medic";
 import { notifications } from "@mantine/notifications";
 import { Patient } from "@/domain/Models/Patient";
+import { GetAvailableHours } from "@/domain/useCases/get-available-hours";
 
 type FormValues = {
   patient: string;
@@ -39,7 +40,7 @@ export function NewAppointment() {
   const [patients, setPatients] = useState([] as Patient[]);
   const [medics, setMedics] = useState([] as Medic[]);
 
-  const hourInputRef = useRef<HTMLInputElement>(null);
+  const [availableHours, setAvailableHours] = useState([] as { value: string; label: string }[]);
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -79,6 +80,24 @@ export function NewAppointment() {
     }
   }, []);
 
+  const onGetAvailableHours = useCallback(async (props: GetAvailableHours.Props) => {
+    setIsLoading.open();
+    try {
+      const response = await getAvailableHours.execute(props);
+
+      const remmapedResponse = response.availablePeriods.map((date) => ({
+        value: new Date(date).toISOString(),
+        label: timeParser.format(new Date(date)),
+      }));
+
+      setAvailableHours(remmapedResponse);
+      form.setFieldValue('hour', remmapedResponse[0].value);
+    } catch (error) {
+    } finally {
+      setIsLoading.close();
+    }
+  }, []);
+
   const patientsData = useMemo(() => patients.map((patient) => ({ value: patient.name, ...patient })), [patients]);
   const medicsData = useMemo(() => medics.map((medic) => ({ value: medic.name, ...medic })), [medics]);
 
@@ -101,6 +120,11 @@ export function NewAppointment() {
       setIsLoading.close();
     }
   }, []);
+
+  useEffect(() => {
+    if (form.values.medic && openDate && newAppointmentModal)
+      onGetAvailableHours({ medicId: form.values.medic, when: openDate });
+  }, [form.values.medic, openDate, newAppointmentModal]);
 
   return (
     <Modal
@@ -139,16 +163,13 @@ export function NewAppointment() {
           error={form.errors.medic}
         />
 
-        <TimeInput
+        <Select
           label="Horário"
+          description="Selecione um médico para ver a lista de horário disponíveis"
           aria-label="Horário"
-          ref={hourInputRef}
           withAsterisk
-          rightSection={
-            <ActionIcon onClick={() => hourInputRef.current?.showPicker()}>
-              <Clock size="1rem" />
-            </ActionIcon>
-          }
+          data={availableHours}
+          disabled={!form.values.medic}
           {...form.getInputProps("hour")}
         />
 
