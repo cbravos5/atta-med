@@ -4,7 +4,7 @@ import { cancelAppointment, getAppointments } from "@/main/Registry";
 import { addScrollBar } from "@/presentation/helpers/addScrollBar";
 import { shortDateParser, timeParser } from "@/presentation/helpers/parsers";
 import { useAppointmentStore } from "@/presentation/store/appointment";
-import { ActionIcon, Center, createStyles, Loader, Modal, Skeleton, Table } from "@mantine/core";
+import { ActionIcon, Center, createStyles, Loader, Modal, Skeleton, Table, Title } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -127,24 +127,32 @@ export function Appointments() {
         size="80%"
         styles={{
           content: { height: "95%" },
-          body: { maxWidth: 1000, minWidth: 565, margin: "auto" },
+          body: { maxWidth: 1000, minWidth: 565, margin: "auto", height: "100%" },
           title: { flex: 1, textAlign: "center" },
         }}
         className={classes.modal}
       >
-        <Skeleton visible={isLoading}>
-          <Table sx={{ borderCollapse: "separate", borderSpacing: "0 5px" }}>
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Idade</th>
-                <th>Sexo</th>
-                <th>Horário</th>
-                <th> </th>
-              </tr>
-            </thead>
-            <tbody>{rows}</tbody>
-          </Table>
+        <Skeleton visible={isLoading} h="100%">
+          {appointments.length === 0 ? (
+            <Center w="100%" h="100%">
+              <Title order={3} color="gray" ta="center">
+                Não existem agendamentos para esta data
+              </Title>
+            </Center>
+          ) : (
+            <Table sx={{ borderCollapse: "separate", borderSpacing: "0 5px" }}>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Idade</th>
+                  <th>Sexo</th>
+                  <th>Horário</th>
+                  <th> </th>
+                </tr>
+              </thead>
+              <tbody>{rows}</tbody>
+            </Table>
+          )}
         </Skeleton>
       </Modal>
 

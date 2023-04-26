@@ -50,10 +50,7 @@ export default function Dashboard() {
     [appointments]
   );
 
-  const todayAppointments = useMemo(
-    () => appointments.filter(({ isCancelled }) => !isCancelled),
-    [appointments]
-  );
+  const todayAppointments = useMemo(() => appointments.filter(({ isCancelled }) => !isCancelled), [appointments]);
 
   return (
     <PageContent pageTitle="Dashboard" w="75%" maw={1200} miw={600}>
@@ -70,6 +67,11 @@ export default function Dashboard() {
       <Divider color="gray" size="xs" w="100%" />
 
       <Skeleton visible={isLoading}>
+        {appointments.length === 0 && (
+          <Title order={3} color="gray" ta="center">
+            Ainda não existem agendamentos para hoje
+          </Title>
+        )}
         <Box w="100%" miw={600} mih={250} h="30vh" mah={400} sx={{ overflowY: "auto", ...addScrollBar() }}>
           <Accordion w="100%" maw="100%">
             {Object.keys(appointmentsByMedic).map((key, i) => (
